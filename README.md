@@ -4,3 +4,6 @@ react
 react-router
 axios
 firebase
+redux, thunk
+authentication
+
