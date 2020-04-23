@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Aux from "../../../hoc/Aux/Aux";
 import Button from "../../UI/Button/Button";
 
+// COULD BE CONVERT TO FUNCTIONAL COMPONENT
 
 class OrderSummary extends Component {
 

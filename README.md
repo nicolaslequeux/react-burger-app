@@ -6,4 +6,6 @@ axios
 firebase
 redux, thunk
 authentication
+lazzy loading
+
 

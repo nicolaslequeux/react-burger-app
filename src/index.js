@@ -21,7 +21,10 @@ import authReducer from "./store/reducers/auth";
 //  );
 
 // Ajout de thunk
- const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// if project setup ok, je peux retirer redux devtools de production:
+const composeEnhancers = process.env.NODE_ENV === 'development'
+  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
  const rootReducer = combineReducers({
    // I define 3 domains for reducers
