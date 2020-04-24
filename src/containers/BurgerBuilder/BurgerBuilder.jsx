@@ -13,7 +13,8 @@ import axios from "../../axios-orders";
 // import * as actionTypes from "../../store/actions/actionTypes";
 import  * as actions from "../../store/actions/index"; // we can ommit index.js as taken by default
 
-class BurgerBuilder extends Component {
+// !!! export is used for testing files !!!
+export class BurgerBuilder extends Component {
 
   state = {
     purchasing: false
