@@ -1,54 +1,58 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Modal from "../../components/UI/Modal/Modal";
 
-// En plus du composant children je récupère l'instance axios pour détecter deçu les erreurs
+// Hook name must start with 'use'
+import useHttpErrorHandler from '../../hooks/http-error-handler';
+
+// En plus du composant children je récupère l'instance axios pour détecter dessus les erreurs
 const withErrorHandler = (WrappedComponent, axios) => {
 
   // je retourne une class function anonyme
-  return class extends Component {
+  return props => {
 
-    state = {
-      error: null
-    }
+    //// AVANT CREATION DU HOOK
+    // const [error, setError] = useState(null);
 
-    // ON PEUX REMPLACER WILLMOUNT PAR L'UTILISATION DU CONSTRUCTOR
-    componentWillMount () {
-      // JE CREE DES PROPIETES DE CLASSE A CHAUD POUR SAVOIR LES DEMONTER
-      this.reqInterceptor = axios.interceptors.request.use(req => {
-        this.setState({error: null});
-        return req;
-      });
-      this.resInterceptor = axios.interceptors.response.use(res => res, error => {
-        this.setState({ error: error });
-      });
-    }
+    // // !!!! componentWillUnmount DOES NOT EXIT WITH useEffect,
+    // // !!!! execute before render JSX cycle means with just as to keep it outside!!
+    // // componentWillMount () {
+    //   const reqInterceptor = axios.interceptors.request.use(req => {
+    //     setError(null);
+    //     return req;
+    //   });
+    //   const resInterceptor = axios.interceptors.response.use(res => res, err => {
+    //     setError(err);
+    //   });
+    // // }
+
+    // // componentWillUnmount () {
+    // useEffect(() => {
+    //   return () => {
+    //     axios.interceptors.request.eject(reqInterceptor);
+    //     axios.interceptors.response.eject(resInterceptor);
+    //   };
+    // }, [reqInterceptor, resInterceptor])  
     
-    // SINON DE NOUVEAUX INTERCEPTORS SONT CREES A CHAQUE CREATION DE COMPOSANT ET RESTENT EN MEMOIRE, DEAD...
-    componentWillUnmount () {
-      // console.log("will unmount", this.reqInterceptor, this.resInterceptor)
-      axios.interceptors.request.eject(this.reqInterceptor);
-      axios.interceptors.response.eject(this.resInterceptor);
-    }
+    // const errorConfirmedHandler = () => {
+    //   setError(null);
+    // }
 
-    errorConfirmedHandler = () => {
-      this.setState({error: null})
-    }
+    const [error, clearError] = useHttpErrorHandler(axios);
 
-    render () {
-      return (
-        <>
-          <Modal
-            show={this.state.error}
-            modalClosed={this.errorConfirmedHandler}
-          >
-            {this.state.error ? this.state.error.message : null}
-          </Modal>
-          <WrappedComponent {...this.props} />
-        </>
-      )
-    }
-  }
-}
+    return (
+      <>
+        <Modal
+          show={error}
+          modalClosed={clearError}
+        >
+          {error ? error.message : null}
+        </Modal>
+        <WrappedComponent {...props} />
+      </>
+    );
+
+  };
+};
 
 export default withErrorHandler;
